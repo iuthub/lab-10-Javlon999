@@ -6,6 +6,8 @@ use App\Like;
 use App\Post;
 use App\Tag;
 use Illuminate\Http\Request;
+use Auth;
+use Gate;
 
 class PostController extends Controller
 {
@@ -70,6 +72,9 @@ class PostController extends Controller
             'title' => 'required|min:5',
             'content' => 'required|min:10'
         ]);
+        if (Gate::denies('update-post', $post)) {
+            return redirect()->back();
+        }
         $post = Post::find($request->input('id'));
         $post->title = $request->input('title');
         $post->content = $request->input('content');
